@@ -1,13 +1,26 @@
 import { useState } from "react";
+import { ShieldCheck, ImagePlus } from "lucide-react";
 import addData from "../../utils/addData";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Captcha from "../../utils/Captcha";
+import { generateToken } from "../../utils/generateToken";
+
+const categories = [
+  "Hostel",
+  "Hygiene",
+  "Electricity",
+  "WiFi",
+  "Faculty",
+  "Ragging",
+  "Harassment",
+  "Classrooms",
+];
 
 const SubmitIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
   const [imagePreview, setImagePreview] = useState(null);
-  const [captchaToken , SetcaptchaToken] = useState(null)
+  const [captchaToken, setCaptchaToken] = useState(null);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -16,6 +29,7 @@ const SubmitIssue = () => {
     category: "",
     location: "",
     description: "",
+    reportId :generateToken(),
     image: null,
   });
 
@@ -31,50 +45,59 @@ const SubmitIssue = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!anonymous && (!form.name || !form.contact)) {
-      alert("Name and contact are required when anonymous mode is off.");
+    if (!captchaToken) {
+      toast.error("Please verify captcha first");
       return;
     }
-   const toastId  = toast.loading("Reporting")
-  const report = await addData(form)
-  
-  if(report){
-    
-    toast.success("Report submitted..", {id:toastId});
-    navigate("/")
-    
 
-  
-  }
+    if (!anonymous && (!form.name || !form.contact)) {
+      toast.error("Name and contact are required");
+      return;
+    }
 
-    // console.log({ anonymous, ...form });
+    const toastId = toast.loading("Submitting report...");
 
+    const report = await addData({
+      ...form,
+      anonymous,
+      captchaToken,
+    });
+
+    if (report) {
+      toast.success("Report submitted successfully", { id: toastId });
+      navigate("/");
+    } else {
+      toast.error("Failed to submit report", { id: toastId });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden">
-        
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
+
         {/* Header */}
-        <div className="bg-blue-900 text-white px-8 py-6">
-          <h1 className="text-2xl font-bold">
-            CampusCare<span className="text-emerald-400">+</span>
-          </h1>
-          <p className="text-blue-100 mt-1">
-            Report a campus issue safely and responsibly
+        <div className="bg-emerald-700 text-white px-8 py-6">
+          <div className="flex items-center gap-2">
+            <ShieldCheck />
+            <h1 className="text-2xl font-bold">
+              Campus<span className="text-emerald-300">Care</span>
+            </h1>
+          </div>
+          <p className="text-emerald-100 mt-1">
+            Report a campus issue safely and anonymously
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
 
           {/* Anonymous Toggle */}
-          <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-lg p-4">
+          <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-5">
             <div>
-              <h3 className="font-semibold text-blue-900">
+              <h3 className="font-semibold text-emerald-900">
                 Submit Anonymously
               </h3>
               <p className="text-sm text-gray-600">
@@ -97,96 +120,70 @@ const SubmitIssue = () => {
             </button>
           </div>
 
-          {/* Identity Section */}
+          {/* Identity */}
           {!anonymous && (
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Your Name
-                </label>
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-900"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contact (Email / Phone)
-                </label>
-                <input
-                  name="contact"
-                  value={form.contact}
-                  onChange={handleChange}
-                  className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-900"
-                  required
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Issue Info */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Issue Category
-              </label>
-              <select
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-900"
-                required
-              >
-                <option value="">Select category</option>
-                <option>Hostel</option>
-                <option>WiFi</option>
-                <option>Hygiene</option>
-                <option>Electricity</option>
-                <option>Faculty</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
+            <div className="grid md:grid-cols-2 gap-5">
               <input
-                name="location"
-                value={form.location}
+                name="name"
+                value={form.name}
                 onChange={handleChange}
-                placeholder="Block / Room / Area"
-                className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-900"
+                placeholder="Your name"
+                className="input"
+                required
+              />
+              <input
+                name="contact"
+                value={form.contact}
+                onChange={handleChange}
+                placeholder="Email or phone"
+                className="input"
                 required
               />
             </div>
-          </div>
+          )}
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Issue Description
-            </label>
-            <textarea
-              name="description"
-              value={form.description}
+          {/* Issue Details */}
+          <div className="grid md:grid-cols-2 gap-5">
+            <select
+              name="category"
+              value={form.category}
               onChange={handleChange}
-              rows="4"
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-900"
+              className="input"
+              required
+            >
+              <option value="">Select issue category</option>
+              {categories.map((cat, i) => (
+                <option key={i}>{cat}</option>
+              ))}
+            </select>
+
+            <input
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Location (Block / Room / Area)"
+              className="input"
               required
             />
           </div>
 
+          {/* Description */}
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows="4"
+            placeholder="Describe the issue in detail"
+            className="input"
+            required
+          />
+
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Image (Optional)
+            <label className="block font-medium text-gray-700 mb-2">
+              Upload Image (optional)
             </label>
-
-            <div className="border-2 border-dashed rounded-lg p-4 text-center">
+            <div className="border-2 border-dashed border-emerald-200 rounded-xl p-6 text-center">
               <input
                 type="file"
                 accept="image/*"
@@ -196,8 +193,9 @@ const SubmitIssue = () => {
               />
               <label
                 htmlFor="imageUpload"
-                className="cursor-pointer text-blue-700 font-medium"
+                className="inline-flex items-center gap-2 cursor-pointer text-emerald-700 font-medium"
               >
+                <ImagePlus />
                 Click to upload image
               </label>
 
@@ -211,17 +209,35 @@ const SubmitIssue = () => {
             </div>
           </div>
 
-          <Captcha onVerify={SetcaptchaToken} />
+          {/* Captcha */}
+          <Captcha onVerify={setCaptchaToken} />
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-900 hover:bg-blue-800 text-white py-3 rounded-xl font-semibold text-lg"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-semibold text-lg transition"
           >
-            Submit Issue
+            Submit Issue Securely
           </button>
         </form>
       </div>
+
+      {/* Input utility */}
+      <style>
+        {`
+          .input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            outline: none;
+          }
+          .input:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 2px rgba(5,150,105,0.2);
+          }
+        `}
+      </style>
     </div>
   );
 };
