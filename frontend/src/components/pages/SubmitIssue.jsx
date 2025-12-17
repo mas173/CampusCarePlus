@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { ShieldCheck, ImagePlus, Send } from "lucide-react";
+import {  Send } from "lucide-react";
 import addData from "../../utils/addData";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Captcha from "../../utils/Captcha";
-import { Send, Upload } from "lucide-react";
-import { generateToken } from "../../utils/generateToken";
+import {  Upload } from "lucide-react";
+import { generateReportId } from "../../utils/generateReportId";
 
 
 
 const SubmitIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
   const [imagePreview, setImagePreview] = useState(null);
-  const [captchaToken , SetcaptchaToken] = useState(null)
+  const [captchaToken , SetcaptchaToken] = useState(null);
+  const [isSubmitting , setisSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -22,6 +23,8 @@ const SubmitIssue = () => {
     location: "",
     description: "",
     image: null,
+    reportId:generateReportId(),
+    
   });
 
   const categories = [
@@ -42,6 +45,8 @@ const SubmitIssue = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -50,26 +55,43 @@ const SubmitIssue = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
 
-    if (!anonymous && (!form.name || !form.contact)) {
-      alert("Name and contact are required when anonymous mode is off.");
-      return;
-    }
-   const toastId  = toast.loading("Reporting")
-  const report = await addData(form)
-  
-  if(report){
-    
-    toast.success("Report submitted..", {id:toastId});
-    navigate("/")
-    
 
   
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!captchaToken) {
+    toast.error("verify captcha first");
+    return;
   }
 
-  };
+  if (!anonymous && (!form.name || !form.contact)) {
+    toast.error("Name and contact are required");
+    return;
+  }
+
+  setisSubmitting(true);
+
+  const toastId = toast.loading("Reporting");
+
+  try {
+    const report = await addData(form, anonymous);
+
+    if (report) {
+      toast.success("Report submitted..", { id: toastId });
+      navigate("/");
+    } else {
+      toast.error("failed to report .. try again later", { id: toastId });
+    }
+  } catch (err) {
+    toast.error("Something went wrong", { id: toastId });
+  } finally {
+    setisSubmitting(false); // ✅ ALWAYS resets
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -233,14 +255,24 @@ const SubmitIssue = () => {
           {/* Submit */}
 
           { !anonymous ? (<button
+          disabled={isSubmitting}
             type="submit"
-            className="cursor-pointer w-full bg-emerald-900 hover:bg-emerald-800 text-white py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
+            className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
+  ${isSubmitting
+    ? "bg-gray-400 cursor-not-allowed"
+    : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"}
+`}
           >
             <Send />
             Submit Issue
           </button>) : (<button
+          disabled={isSubmitting}
             type="submit"
-            className="cursor-pointer w-full bg-emerald-900 hover:bg-emerald-800 text-white py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
+            className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
+  ${isSubmitting
+    ? "bg-gray-400 cursor-not-allowed"
+    : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"}
+`}
           >
             <Send />
             Submit Issue Anonymously
