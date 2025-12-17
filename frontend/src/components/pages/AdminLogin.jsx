@@ -46,11 +46,22 @@ const AdminLogin = () => {
       <div className="admin-login-container">
         {/* LEFT PANEL */}
         <div className="admin-login-left">
-          <ShieldCheck size={46} className="shield-icon" />
 
-          <h1 className="logo">
-            Campus<span>Care</span>
-          </h1>
+          <button
+            className="home-btn"
+            onClick={() => navigate("/")}
+          >
+            <ArrowLeft size={20} />
+            Back to Home
+          </button>
+
+          <div className="flex gap-2 mt-3">
+            <ShieldCheck size={36} className="shield-icon mt-1" />
+
+            <h1 className="logo">
+              Campus<span>Care</span>
+            </h1>
+          </div>
 
           <p className="tagline">
             Secure administration for a safer campus ecosystem

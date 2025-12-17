@@ -33,6 +33,20 @@ const SubmitIssue = () => {
     image: null,
   });
 
+  const categories = [
+    'Hostel Issues',
+    'Hygiene & Sanitation',
+    'WiFi & Internet',
+    'Electricity & Power',
+    'Harassment',
+    'Ragging',
+    'Faculty Concerns',
+    'Infrastructure',
+    'Food & Mess',
+    'Library',
+    'Other'
+  ];
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -108,12 +122,12 @@ const SubmitIssue = () => {
             <button
               type="button"
               onClick={() => setAnonymous(!anonymous)}
-              className={`w-14 h-7 flex items-center rounded-full p-1 transition ${
+              className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition ${
                 anonymous ? "bg-emerald-500" : "bg-gray-300"
               }`}
             >
               <div
-                className={`bg-white w-5 h-5 rounded-full shadow transform transition ${
+                className={`bg-white w-5 h-5 rounded-full cursor-pointer shadow transform transition ${
                   anonymous ? "translate-x-7" : ""
                 }`}
               />
@@ -213,7 +227,8 @@ const SubmitIssue = () => {
           <Captcha onVerify={setCaptchaToken} />
 
           {/* Submit */}
-          <button
+
+          { !anonymous ? (<button
             type="submit"
             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-semibold text-lg transition"
           >
