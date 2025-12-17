@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { ShieldCheck, ImagePlus, Send } from "lucide-react";
 import addData from "../../utils/addData";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Captcha from "../../utils/Captcha";
 import { Send, Upload } from "lucide-react";
+import { generateToken } from "../../utils/generateToken";
+
+
 
 const SubmitIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
