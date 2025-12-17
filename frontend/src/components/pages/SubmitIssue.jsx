@@ -224,7 +224,7 @@ const SubmitIssue = () => {
   className="cursor-pointer w-full bg-emerald-900 hover:bg-emerald-800 text-white py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition"
 >
   <Send />
-  {anonymous ? "Submit Issue" : "Submit Issue Anonymously"}
+  {anonymous ?  "Submit Issue Anonymously" : "Submit Issue" }
 </button>
         </form>
       </div>
