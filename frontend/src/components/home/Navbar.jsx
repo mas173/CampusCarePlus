@@ -41,7 +41,7 @@ const Navbar = () => {
 
             <button
               onClick={() => navigate("/admin/login")}
-              className="flex items-center gap-2 border border-emerald-700 text-emerald-700 px-4 py-2 rounded-lg hover:bg-emerald-700 hover:text-white transition"
+              className="flex items-center gap-2 border border-emerald-700 text-emerald-700 px-4 py-2 cursor-pointer rounded-lg hover:bg-emerald-700 hover:text-white transition"
             >
               <LogIn size={18} />
               Admin Login
@@ -49,7 +49,7 @@ const Navbar = () => {
 
             <button
               onClick={() => navigate("/issues/report")}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg transition font-semibold"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg cursor-pointer transition font-semibold"
             >
               Report Issue
             </button>

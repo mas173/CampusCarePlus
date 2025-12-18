@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import {Eye} from "lucide-react"
 import IssueStatusBadge from "./IssueStatusBadge";
 
 const issues = [
@@ -23,13 +24,69 @@ const issues = [
     status: "Resolved",
     date: "2025-03-08",
   },
+  {
+    id: "#CC104",
+    category: "Infrastructure",
+    location: "Block A – Classroom 204",
+    status: "Pending",
+    date: "2025-03-09",
+  },
+  {
+    id: "#CC105",
+    category: "Electricity",
+    location: "Hostel Room 312",
+    status: "In Progress",
+    date: "2025-03-09",
+  },
+  {
+    id: "#CC106",
+    category: "Water Supply",
+    location: "Girls Hostel – Washroom",
+    status: "Resolved",
+    date: "2025-03-10",
+  },
+  {
+    id: "#CC107",
+    category: "Security",
+    location: "Main Gate",
+    status: "Resolved",
+    date: "2025-03-10",
+  },
+  {
+    id: "#CC108",
+    category: "Hygiene",
+    location: "Library Restroom",
+    status: "Pending",
+    date: "2025-03-11",
+  },
+  {
+    id: "#CC109",
+    category: "Maintenance",
+    location: "Auditorium",
+    status: "In Progress",
+    date: "2025-03-11",
+  },
+  {
+    id: "#CC110",
+    category: "Internet",
+    location: "Computer Lab 1",
+    status: "In Progress",
+    date: "2025-03-12",
+  },
+  {
+    id: "#CC111",
+    category: "Furniture",
+    location: "Seminar Hall",
+    status: "Rejected",
+    date: "2025-03-12",
+  }
 ];
 
 const IssuesTable = () => {
     const navigate = useNavigate()
   return (
     <div className="bg-white rounded-xl shadow mt-8 overflow-x-auto">
-      <table className="w-full text-left">
+      <table className="w-full text-left text-sm">
         <thead className="bg-gray-100 text-gray-600">
           <tr>
             <th className="p-4">ID</th>
@@ -52,7 +109,8 @@ const IssuesTable = () => {
               </td>
               <td>{issue.date}</td>
               <td>
-                <button className="text-blue-600 hover:underline" onClick={()=>navigate("/admin/issues/2")}>
+                <button className="flex items-center gap-1.5 text-sm text-blue-600 cursor-pointer hover:underline" onClick={()=>navigate("/admin/issues/2")}>
+                  <Eye className="w-4 h-4" />
                   View
                 </button>
               </td>
