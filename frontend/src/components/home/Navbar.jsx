@@ -6,15 +6,28 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const NavLink = ({ label, href }) => (
-    <a
-      href={href}
-      className="text-gray-700 hover:text-emerald-700 transition font-medium"
-      onClick={() => setOpen(false)}
-    >
-      {label}
-    </a>
-  );
+  const NavLink = ({ label, sectionId }) => {
+    const handleScroll = () => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+      setOpen(false);
+    };
+
+    return (
+      <button
+        onClick={handleScroll}
+        className="text-gray-700 hover:text-emerald-700 cursor-pointer transition font-medium"
+      >
+        {label}
+      </button>
+    );
+  };
+
 
   return (
     <nav className="bg-white shadow-sm fixed w-full z-50">
@@ -34,10 +47,10 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <NavLink label="Features" href="#features" />
-            <NavLink label="How It Works" href="#how-it-works" />
-            <NavLink label="Categories" href="#categories" />
-            <NavLink label="Privacy" href="#privacy" />
+            <NavLink label="Features" sectionId="features" />
+            <NavLink label="How It Works" sectionId="how-it-works" />
+            <NavLink label="Categories" sectionId="categories" />
+            <NavLink label="Privacy" sectionId="privacy" />
 
             <button
               onClick={() => navigate("/admin/login")}
@@ -70,15 +83,14 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden bg-white border-t overflow-hidden transition-all duration-300 ${
-          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`md:hidden bg-white border-t overflow-hidden transition-all duration-300 ${open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <div className="px-6 py-4 flex flex-col gap-4">
-          <NavLink label="Features" href="#features" />
-          <NavLink label="How It Works" href="#how-it-works" />
-          <NavLink label="Categories" href="#categories" />
-          <NavLink label="Privacy" href="#privacy" />
+          <NavLink label="Features" sectionId="features" />
+          <NavLink label="How It Works" sectionId="how-it-works" />
+          <NavLink label="Categories" sectionId="categories" />
+          <NavLink label="Privacy" sectionId="privacy" />
 
           <button
             onClick={() => navigate("/admin/login")}

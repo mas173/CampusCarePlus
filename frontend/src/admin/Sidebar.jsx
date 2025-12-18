@@ -1,11 +1,11 @@
-import { ShieldCheck } from "lucide-react";
+import { AlertTriangle, ChartNoAxesCombined, LayoutDashboard, Settings, ShieldCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const menuItems = [
-  { name: "Dashboard", path: "/admin/dashboard" },
-  { name: "Issues", path: "/admin/issues" },
-  { name: "Analytics", path: "/admin/analytics" },
-  { name: "Settings", path: "/admin/settings" },
+  { name: "Dashboard", icon: <LayoutDashboard />, path: "/admin/dashboard" },
+  { name: "Issues", icon: <AlertTriangle />, path: "/admin/issues" },
+  { name: "Analytics", icon: <ChartNoAxesCombined />, path: "/admin/analytics" },
+  { name: "Settings", icon: <Settings />, path: "/admin/settings" },
 ];
 
 const Sidebar = ({ open, onClose }) => {
@@ -39,11 +39,12 @@ const Sidebar = ({ open, onClose }) => {
               to={item.path}
               onClick={onClose}
               className={({ isActive }) =>
-                `px-4 py-2 rounded-lg transition ${
+                `px-4 py-2 flex items-center gap-2 rounded-lg transition ${
                   isActive ? "bg-emerald-800" : "hover:bg-emerald-600"
                 }`
               }
             >
+              {item.icon}
               {item.name}
             </NavLink>
           ))}

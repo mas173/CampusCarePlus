@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Bell, Shield, LogOut, Save, SaveIcon } from 'lucide-react';
+import { User, Bell, Shield, LogOut, SaveIcon } from 'lucide-react';
 
 export default function Settings() {
   const [profile, setProfile] = useState({
@@ -71,7 +71,7 @@ export default function Settings() {
         <Select
           label="Theme"
           value={preferences.theme}
-          options={['Light', 'Dark']}
+          options={['System Default', 'Light', 'Dark']}
           onChange={e =>
             setPreferences({ ...preferences, theme: e.target.value })
           }
@@ -86,18 +86,14 @@ export default function Settings() {
         />
       </Section>
 
-      <div className="flex justify-between items-center">
-        <button className="flex items-center gap-2 text-red-600 cursor-pointer hover:underline">
-          <LogOut size={18} />
-          Logout
-        </button>
-
+      <div className="flex justify-center items-center">
+        
         <button
           onClick={handleSave}
           className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 cursor-pointer rounded hover:bg-emerald-700"
         >
           <SaveIcon size={18} />
-          Save Settings
+          Save Changes
         </button>
       </div>
     </div>

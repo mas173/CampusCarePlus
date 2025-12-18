@@ -10,17 +10,28 @@ import Solution from "../home/Solution";
 
 const Home = () => {
   return (
-      <>
+    <>
       <Navbar />
 
       {/* Offset for fixed navbar */}
       <div className="pt-16 bg-gray-50 text-gray-900">
         <Hero />
-        <Problem />
-        <Solution />
-        <HowItWorks />
-        <Categories />
-        <Privacy />
+
+        <section id="features" className="pt-24">
+          <Problem />
+          <Solution />
+        </section>
+        <section id="how-it-works" className="pt-24">
+          <HowItWorks />
+        </section>
+
+        <section id="categories" className="pt-24">
+          <Categories />
+        </section>
+
+        <section id="privacy" className="pt-24">
+          <Privacy />
+        </section>
         <CTA />
         <Footer />
       </div>
