@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Captcha from "../../utils/Captcha";
 import {  Upload } from "lucide-react";
 import { generateReportId } from "../../utils/generateReportId";
+import uploadImage from "../../utils/uploadImage";
 
 
 
@@ -14,6 +15,8 @@ const SubmitIssue = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [captchaToken , SetcaptchaToken] = useState(null);
   const [isSubmitting , setisSubmitting] = useState(false);
+  const [imageFile, setimageFile] = useState(null)
+  
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -47,13 +50,21 @@ const SubmitIssue = () => {
 
 
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
-    setForm({ ...form, image: file });
-    setImagePreview(URL.createObjectURL(file));
-  };
+
+   if (file.size > MAX_IMAGE_SIZE) {
+    toast.error("Image size must be less than 2 MB");
+    e.target.value = "";
+    return;
+  }
+  setimageFile(file); 
+  setImagePreview(URL.createObjectURL(file));
+};
+
 
 
 
@@ -73,24 +84,47 @@ const handleSubmit = async (e) => {
   }
 
   setisSubmitting(true);
-
   const toastId = toast.loading("Reporting");
 
   try {
-    const report = await addData(form, anonymous);
+    let image_url = ""; 
 
-    if (report) {
-      toast.success("Report submitted..", { id: toastId });
-      navigate("/");
-    } else {
-      toast.error("failed to report .. try again later", { id: toastId });
+    
+    if (imageFile) {
+      const image_upload = await uploadImage(imageFile);
+
+      if (!image_upload?.imageUrl) {
+        throw new Error("Image upload failed");
+      }
+
+      image_url = image_upload.imageUrl;
     }
+
+    
+    const finalForm = {
+      name: anonymous ? "" : form.name,
+      contact: anonymous ? "" : form.contact,
+      category: form.category,
+      location: form.location,
+      description: form.description,
+      image: image_url, 
+      reportId: form.reportId,
+      createdAt: new Date(),
+    };
+
+    await addData(finalForm, anonymous);
+
+    toast.success("Report submitted", { id: toastId });
+    navigate("/");
+
   } catch (err) {
+    console.error(err);
     toast.error("Something went wrong", { id: toastId });
   } finally {
-    setisSubmitting(false); // ✅ ALWAYS resets
+    setisSubmitting(false);
   }
 };
+
 
 
   return (

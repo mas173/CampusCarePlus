@@ -19,7 +19,7 @@ const reported_data =     await addDoc(collection(db, "issues"), {
   } catch (error) {
     console.error("Error adding data:", error);
     return false
-    throw error;
+  
   }
 };
 
