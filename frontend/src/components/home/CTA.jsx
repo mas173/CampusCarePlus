@@ -32,7 +32,7 @@ const CTA = () => {
 
         <button
           onClick={() => navigate("/issues/report")}
-          className="mt-10 inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 px-10 py-4 rounded-xl font-semibold text-lg transition shadow-lg"
+          className="mt-10 inline-flex cursor-pointer items-center gap-2 bg-emerald-500 hover:bg-emerald-600 px-10 py-4 rounded-xl font-semibold text-lg transition shadow-lg"
         >
           Report an Issue Now
           <ArrowRight size={20} />

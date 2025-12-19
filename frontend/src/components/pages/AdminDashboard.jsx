@@ -8,8 +8,6 @@ import Topbar from "../../admin/Topbar";
 const AdminDashboard = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
-      
-  
 
       <main className=" p-6 pt-10">
         <StatsGrid />
