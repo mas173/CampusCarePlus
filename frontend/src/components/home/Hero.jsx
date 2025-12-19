@@ -37,14 +37,14 @@ const Hero = () => {
           <div className="mt-10 flex flex-wrap gap-4">
             <button
               onClick={() => navigate("/issues/report")}
-              className="hero-btn-primary"
+              className="hero-btn-primary cursor-pointer"
             >
               Report an Issue
             </button>
 
             <button
               onClick={() => navigate("/admin/login")}
-              className="hero-btn-secondary"
+              className="hero-btn-secondary cursor-pointer"
             >
               Admin Login
             </button>

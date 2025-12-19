@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {  Send } from "lucide-react";
+import {  Send, ShieldCheck } from "lucide-react";
 import addData from "../../utils/addData";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -133,9 +133,15 @@ const handleSubmit = async (e) => {
         
         {/* Header */}
         <div className="bg-emerald-700 text-white px-8 py-6">
-          <h1 className="text-2xl font-bold">
-            CampusCare
-          </h1>
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <ShieldCheck className="text-white-600 w-7 h-7" />
+            <span className="text-xl font-bold text-white-900">
+              Campus<span className="text-emerald-200">Care</span>
+            </span>
+          </div>
           <p className="text-emerald-100 mt-1">
             Report a campus issue safely and responsibly
           </p>
