@@ -1,22 +1,19 @@
 import { useState } from "react";
-import {  Send, ShieldCheck } from "lucide-react";
-import addData from "../../utils/addData";
+import { Send, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Captcha from "../../utils/Captcha";
-import {  Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { generateReportId } from "../../utils/generateReportId";
-import uploadImage from "../../utils/uploadImage";
-
-
+import submitIssue from "../../utils/submitissue";
 
 const SubmitIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
   const [imagePreview, setImagePreview] = useState(null);
-  const [captchaToken , SetcaptchaToken] = useState(null);
-  const [isSubmitting , setisSubmitting] = useState(false);
-  const [imageFile, setimageFile] = useState(null)
-  
+  const [captchaToken, SetcaptchaToken] = useState(null);
+  const [isSubmitting, setisSubmitting] = useState(false);
+  const [imageFile, setimageFile] = useState(null);
+
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -26,111 +23,91 @@ const SubmitIssue = () => {
     location: "",
     description: "",
     image: null,
-    reportId:generateReportId(),
-    
+    reportId: generateReportId(),
   });
 
   const categories = [
-    'Hostel Issues',
-    'Hygiene & Sanitation',
-    'WiFi & Internet',
-    'Electricity & Power',
-    'Harassment',
-    'Ragging',
-    'Faculty Concerns',
-    'Infrastructure',
-    'Food & Mess',
-    'Library',
-    'Other'
+    "Hostel Issues",
+    "Hygiene & Sanitation",
+    "WiFi & Internet",
+    "Electricity & Power",
+    "Harassment",
+    "Ragging",
+    "Faculty Concerns",
+    "Infrastructure",
+    "Food & Mess",
+    "Library",
+    "Other",
   ];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error("Image size must be less than 2 MB");
+      e.target.value = "";
+      return;
+    }
+    setimageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // console.log(captchaToken);
 
-
-   if (file.size > MAX_IMAGE_SIZE) {
-    toast.error("Image size must be less than 2 MB");
-    e.target.value = "";
-    return;
-  }
-  setimageFile(file); 
-  setImagePreview(URL.createObjectURL(file));
-};
-
-
-
-
-  
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!captchaToken) {
-    toast.error("verify captcha first");
-    return;
-  }
-
-  if (!anonymous && (!form.name || !form.contact)) {
-    toast.error("Name and contact are required");
-    return;
-  }
-
-  setisSubmitting(true);
-  const toastId = toast.loading("Reporting");
-
-  try {
-    let image_url = ""; 
-
-    
-    if (imageFile) {
-      const image_upload = await uploadImage(imageFile);
-
-      if (!image_upload?.imageUrl) {
-        throw new Error("Image upload failed");
-      }
-
-      image_url = image_upload.imageUrl;
+    if (!captchaToken) {
+      toast.error("verify captcha first");
+      return;
     }
 
-    
-    const finalForm = {
-      name: anonymous ? "" : form.name,
-      contact: anonymous ? "" : form.contact,
-      category: form.category,
-      location: form.location,
-      description: form.description,
-      image: image_url, 
-      reportId: form.reportId,
-      createdAt: new Date(),
-    };
+    if (!anonymous && (!form.name || !form.contact)) {
+      toast.error("Name and contact are required");
+      return;
+    }
 
-    await addData(finalForm, anonymous);
+    setisSubmitting(true);
+    const toastId = toast.loading("Reporting");
 
-    toast.success("Report submitted", { id: toastId });
-    navigate("/");
+    try {
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("contact", form.contact);
+      formData.append("description", form.description);
+      formData.append("category", form.category);
+      formData.append("anonymous", anonymous);
+      formData.append("location", form.location);
+      formData.append("token", captchaToken);
+      formData.append("image", imageFile);
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Something went wrong", { id: toastId });
-  } finally {
-    setisSubmitting(false);
-  }
-};
+      const form_data = await submitIssue(formData);
 
+      if (form_data) {
+        toast.success("Report submitted", { id: toastId });
+        navigate("/");
+      }
+      else{
+          toast.error("failed to submit",{id:toastId})
+      }
+      
 
+    } catch (err) {
+      
+      console.log(err);
+    } finally {
+      setisSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden">
-        
         {/* Header */}
         <div className="bg-emerald-700 text-white px-8 py-6">
           <div
@@ -149,7 +126,6 @@ const handleSubmit = async (e) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-
           {/* Anonymous Toggle */}
           <div className="flex items-center justify-between bg-blue-50 border border-emerald-100 rounded-lg p-4">
             <div>
@@ -222,7 +198,9 @@ const handleSubmit = async (e) => {
               >
                 <option value="">Select category</option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -260,7 +238,10 @@ const handleSubmit = async (e) => {
 
           {/* Image Upload */}
           <div>
-            <label htmlFor="imageUpload" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="imageUpload"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Upload Image (Optional)
             </label>
 
@@ -276,7 +257,7 @@ const handleSubmit = async (e) => {
                 htmlFor="imageUpload"
                 className="cursor-pointer text-emerald-700 font-medium flex items-center justify-center gap-2"
               >
-                <Upload/>
+                <Upload />
                 Click to upload image
               </label>
 
@@ -294,29 +275,37 @@ const handleSubmit = async (e) => {
 
           {/* Submit */}
 
-          { !anonymous ? (<button
-          disabled={isSubmitting}
-            type="submit"
-            className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
-  ${isSubmitting
-    ? "bg-gray-400 cursor-not-allowed"
-    : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"}
+          {!anonymous ? (
+            <button
+              disabled={isSubmitting}
+              type="submit"
+              className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
+  ${
+    isSubmitting
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"
+  }
 `}
-          >
-            <Send />
-            Submit Issue
-          </button>) : (<button
-          disabled={isSubmitting}
-            type="submit"
-            className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
-  ${isSubmitting
-    ? "bg-gray-400 cursor-not-allowed"
-    : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"}
+            >
+              <Send />
+              Submit Issue
+            </button>
+          ) : (
+            <button
+              disabled={isSubmitting}
+              type="submit"
+              className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
+  ${
+    isSubmitting
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"
+  }
 `}
-          >
-            <Send />
-            Submit Issue Anonymously
-          </button>)}
+            >
+              <Send />
+              Submit Issue Anonymously
+            </button>
+          )}
         </form>
       </div>
     </div>

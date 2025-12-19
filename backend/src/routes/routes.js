@@ -1,14 +1,22 @@
 const express =require("express");
 const { home } = require("../controllers/campuscare");
 const upload = require("../middlewares/upload");
-const uploadImageController = require("../controllers/upload.controller");
+const tokenVerify = require("../middlewares/recaptcha");
+const submitIssue = require("../controllers/issue.controller");
+
 
 const router = express.Router();
 
 
 router
-.get("/",home)
-.post("/image",upload.single("image"),uploadImageController)
+.post("/",(req,res)=>{
+  res.status(200).json({
+    status:true
+  })
+})
+.post("/submit",upload.single("image"),tokenVerify,submitIssue)
+
+
 
 
 module.exports = router;

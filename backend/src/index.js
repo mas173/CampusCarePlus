@@ -11,9 +11,10 @@ const PORT = process.env.PORT || 3000;
 
 //routes
 app.use(cors({
-    origin: process.env.frontend_url, 
+    origin: process.env.FRONTEND_URL, 
     credentials: true,               
   }))
+  app.use(express.json())
 app.use("/api/campuscare",router)
 
 
