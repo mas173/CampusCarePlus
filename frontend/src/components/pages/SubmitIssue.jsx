@@ -6,6 +6,7 @@ import Captcha from "../../utils/Captcha";
 import { Upload } from "lucide-react";
 import { generateReportId } from "../../utils/generateReportId";
 import submitIssue from "../../utils/submitissue";
+import IssuePreview from "./IssuePreview";
 
 const SubmitIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
@@ -13,6 +14,7 @@ const SubmitIssue = () => {
   const [captchaToken, SetcaptchaToken] = useState(null);
   const [isSubmitting, setisSubmitting] = useState(false);
   const [imageFile, setimageFile] = useState(null);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const navigate = useNavigate();
 
@@ -91,15 +93,14 @@ const SubmitIssue = () => {
 
       if (form_data) {
         toast.success("Report submitted", { id: toastId });
-        navigate("/");
+        setShowOverlay(true);
       }
-      else{
-          toast.error("failed to submit",{id:toastId})
+      else {
+        toast.error("failed to submit", { id: toastId })
       }
-      
 
     } catch (err) {
-      
+
       console.log(err);
     } finally {
       setisSubmitting(false);
@@ -141,14 +142,12 @@ const SubmitIssue = () => {
             <button
               type="button"
               onClick={() => setAnonymous(!anonymous)}
-              className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition ${
-                anonymous ? "bg-emerald-500" : "bg-gray-300"
-              }`}
+              className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition ${anonymous ? "bg-emerald-500" : "bg-gray-300"
+                }`}
             >
               <div
-                className={`bg-white w-5 h-5 rounded-full cursor-pointer shadow transform transition ${
-                  anonymous ? "translate-x-7" : ""
-                }`}
+                className={`bg-white w-5 h-5 rounded-full cursor-pointer shadow transform transition ${anonymous ? "translate-x-7" : ""
+                  }`}
               />
             </button>
           </div>
@@ -276,39 +275,33 @@ const SubmitIssue = () => {
 
           {/* Submit */}
 
-          {!anonymous ? (
-            <button
-              disabled={isSubmitting}
-              type="submit"
-              className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
-  ${
-    isSubmitting
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"
-  }
-`}
-            >
-              <Send />
-              Submit Issue
-            </button>
-          ) : (
-            <button
-              disabled={isSubmitting}
-              type="submit"
-              className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2
-  ${
-    isSubmitting
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-emerald-900 hover:bg-emerald-800 cursor-pointer text-white"
-  }
-`}
-            >
-              <Send />
-              Submit Issue Anonymously
-            </button>
-          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full py-3 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-colors
+              ${isSubmitting
+                ? "bg-gray-400 cursor-not-allowed text-gray-200"
+                : "bg-emerald-900 hover:bg-emerald-800 text-white cursor-pointer"
+              }`}
+          >
+            <Send />
+            {anonymous ? "Submit Issue Anonymously" : "Submit Issue"}
+          </button>
         </form>
       </div>
+
+      {showOverlay && (
+        <IssuePreview
+          form={form}
+          anonymous={anonymous}
+          onClose={() => {
+            setShowOverlay(false);
+            navigate("/");
+          }}
+        />
+      )}
+
+
     </div>
   );
 };

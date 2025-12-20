@@ -1,26 +1,31 @@
-import {toast} from "react-hot-toast"
-import {axiosInstance} from "../lib/axios"
+import { axiosInstance } from "../lib/axios";
 
-const submitIssue = async(form)=>{
+const submitIssue = async (form) => {
+  if (!form) {
+    return {
+      success: false,
+      message: "Form data is missing",
+    };
+  }
 
+  try {
+    const response = await axiosInstance.post("/submit", form);
 
-try {
-  
-if(!form){
-  return alert("form is required")
-}
+    return {
+      success: true,
+      data: response.data,
+    };
 
-const issue_data = await axiosInstance.post("/submit",form);
+  } catch (error) {
+    console.error("Submit Issue Error:", error);
 
-return issue_data.data;
-
-} catch (error) {
-  console.log(error)
-
-  return
-  
-}
-
-}
+    return {
+      success: false,
+      message:
+        error?.response?.data?.message ||
+        "Server error while submitting issue",
+    };
+  }
+};
 
 export default submitIssue;
