@@ -1,9 +1,10 @@
-import { Menu, LogOut, ShieldCheck } from "lucide-react";
+import { Menu, LogOut, ShieldCheck, CloudHail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logout from "../utils/logout";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { getAllissues } from "../lib/apicalls";
+import useAllIssues from "../hooks/UseAllissues";
 
 
 const Navbar = ({ onMenuClick }) => {
@@ -11,12 +12,8 @@ const Navbar = ({ onMenuClick }) => {
   const [isLoading, setisLoading] = useState(false)
    
 
-  const allIssues = async()=>{
-    const data = await getAllissues()
-    console.log(data)
-  }
 
-  allIssues();
+
 
   
   const handleLogout = async () => {
