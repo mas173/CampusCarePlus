@@ -8,9 +8,29 @@ export const getAllissues = async () => {
       headers: await getAuthHeaders(),
     });
 
-    // console.log(data.data);
-    return data.data
+  //  console.log(data.data.issues)
+    return data.data.issues
   } catch (error) {
     console.log(error);
+    return false
   }
 };
+
+
+
+export const getIssueDetailByAdmin = async (id)=>{
+
+  try {
+    const issueDetail = await adminAxios.get(`admin/issues/${id}`,{
+      headers: await getAuthHeaders()
+    })
+
+    // console.log(issueDetail.data)
+    return issueDetail.data
+
+
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}

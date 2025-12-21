@@ -7,8 +7,8 @@ const useAllIssues =()=>{
     queryFn:getAllissues,
     retry:2
   })
-
-  return {isLoading:isLoading , allIssues:data?.issues}
+//  console.log(data)
+  return {isLoading:isLoading , allIssues:data}
 }
 
 export default useAllIssues;

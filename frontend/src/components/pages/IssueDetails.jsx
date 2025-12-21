@@ -1,5 +1,15 @@
 import PriorityBadge from "../../admin/PriorityBadge";
 import StatusBadge from "../../admin/StatusBadge";
+import {useMutation, useQueryClient} from "@tanstack/react-query"
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import useIssueDetail from "../../hooks/UseGetissueDetail";
+import toast from "react-hot-toast";
+import IssueStatusBadge from "../../admin/IssueStatusBadge";
+import IssueDetailsLoader from "../../admin/IssueDetailsLoader";
+import NoIssueFound from "../../admin/NoIssueFound";
+
+
 
 const issue = {
   id: "#CC101",
@@ -15,13 +25,34 @@ const issue = {
 };
 
 const IssueDetails = () => {
+
+  const {id}= useParams()
+
+
+
+const {isLoading , data:issue} = useIssueDetail(id);
+
+console.log(issue)
+
+
+
+if(isLoading){
+  return(<IssueDetailsLoader/>)
+}
+
+if(!issue){
+  return (<NoIssueFound/>)
+}
+
+
+
   return (
     <div className="max-w-4xl">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Issue Details</h1>
         <p className="text-gray-500 text-sm">
-          Issue ID: {issue.id}
+          Issue ID: {issue?.reportId}
         </p>
       </div>
 
@@ -29,22 +60,22 @@ const IssueDetails = () => {
       <div className="bg-white rounded-xl shadow p-6 space-y-6">
         {/* Top Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Info label="Category" value={issue.category} />
-          <Info label="Location" value={issue.location} />
-          <Info label="Reported On" value={issue.date} />
+          <Info label="Category" value={issue?.category} />
+          <Info label="Location" value={issue?.location} />
+          <Info label="Reported On" value={issue?.createdAt ? new Date(issue.createdAt).toLocaleString("en-IN"):""} />
         </div>
 
         {/* Status & Priority */}
         <div className="flex gap-4 flex-wrap">
-          <StatusBadge status={issue.status} />
-          <PriorityBadge priority={issue.priority} />
+          <IssueStatusBadge status={issue?.status} />
+          <PriorityBadge priority={issue?.priority} />
         </div>
 
         {/* Description */}
         <div>
           <h3 className="font-semibold mb-2">Issue Description</h3>
           <p className="text-gray-700 leading-relaxed">
-            {issue.description}
+            {issue?.description}
           </p>
         </div>
 
@@ -52,7 +83,7 @@ const IssueDetails = () => {
         <div>
           <h3 className="font-semibold mb-2">Attached Image</h3>
           <img
-            src={issue.image}
+            src={issue?.attachment}
             alt="Issue"
             className="rounded-lg border max-h-80 object-cover"
           />

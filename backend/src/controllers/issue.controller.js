@@ -80,6 +80,7 @@ const getIssueDetail = async (req,res)=>{
     attachment:issue.imageUrl,
     description: issue.description,
     status: issue.status,
+    location:issue.location,
     createdAt:issue.createdAt
   ? issue.createdAt.toDate().toISOString()
   : null,
@@ -121,6 +122,42 @@ const getAllIssues = async (req, res) => {
   }
 };
 
+const getIssueDetailAdmin = async (req,res)=>{
+ const { reportId } = req.params;
+ console.log(reportId)
 
-module.exports = { getIssueDetail,submitIssue,getAllIssues
+  const snapshot = await db
+    .collection("issues")
+    .where("id", "==", reportId)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    return res.status(404).json({ message: "Issue not found" });
+  }
+
+  const issue = snapshot.docs[0].data();
+
+
+  res.json({
+    reportId: issue.id,
+    aiSummary:issue.aiReason,
+    contact:issue.contact,
+    title: issue.summary,
+    category:issue.category,
+    attachment:issue.imageUrl,
+    description: issue.description,
+    location:issue.location,
+    status: issue.status,
+    priority:issue.priority,
+    createdAt:issue.createdAt
+  ? issue.createdAt.toDate().toISOString()
+  : null,
+    submittedBy: issue.anonymous ? "anonymous": issue.name
+  });
+
+}
+
+
+module.exports = { getIssueDetail,submitIssue,getAllIssues,getIssueDetailAdmin
 };

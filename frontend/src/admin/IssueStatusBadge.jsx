@@ -7,7 +7,7 @@ const statusColors = {
 
 const IssueStatusBadge = ({ status }) => {
   return (
-    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status]}`}>
+    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status?.charAt(0).toUpperCase() + status?.slice(1)]}`}>
       {status}
     </span>
   );
