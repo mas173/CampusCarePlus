@@ -9,8 +9,6 @@ const IssuesTable = () => {
   const [issuesList, setissuesList] = useState([]);
   const { isLoading: Loading, allIssues } = useAllIssues();
   
-  
-  
   useEffect(() => {
     
     if(allIssues && allIssues.length >0){
@@ -27,6 +25,7 @@ const IssuesTable = () => {
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-xl shadow mt-8 overflow-x-auto">
+
       <table className="w-full text-left text-sm">
         <thead className="bg-gray-100 text-gray-600">
           <tr>

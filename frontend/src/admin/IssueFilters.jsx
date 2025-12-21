@@ -1,6 +1,11 @@
 import { Filter, RotateCcw } from "lucide-react";
+import AdminTrackIssue from "./AdminTrackIssue";
+import { useState } from "react";
 
 const IssueFilters = ({ filters, setFilters }) => {
+
+  
+  const [open, setOpen] = useState(false);
 
   const handleChange = (key, value) => {
     setFilters(prev => ({
@@ -19,6 +24,18 @@ const IssueFilters = ({ filters, setFilters }) => {
   };
 
   return (
+    <>
+    {/* Overlay */}
+      {open && <AdminTrackIssue onClose={() => setOpen(false)} />}
+
+      <div className="bg-gray-100 flex justify-end">
+          <button
+          onClick={() => setOpen(true)}
+          className="mb-6 bg-emerald-700 text-white px-4 cursor-pointer py-2 rounded-xl hover:bg-emerald-800 transition"
+        >
+          Track an Issue here
+        </button>
+        </div>
     <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
 
       {/* Header */}
@@ -88,6 +105,7 @@ const IssueFilters = ({ filters, setFilters }) => {
         />
       </div>
     </div>
+    </>
   );
 };
 
