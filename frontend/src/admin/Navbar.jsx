@@ -13,7 +13,6 @@ const Navbar = ({ onMenuClick }) => {
 
   const allIssues = async()=>{
     const data = await getAllissues()
-    console.log(data)
   }
 
   allIssues();
