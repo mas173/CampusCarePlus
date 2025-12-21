@@ -24,8 +24,6 @@ const IssuesTable = () => {
   }, [allIssues])
   
 
-
-
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-xl shadow mt-8 overflow-x-auto">
