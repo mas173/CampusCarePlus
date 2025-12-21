@@ -1,8 +1,7 @@
 import Analytics from "../../admin/Analytics";
 import IssuesTable from "../../admin/IssuesTable";
-import Sidebar from "../../admin/Sidebar";
 import StatsGrid from "../../admin/StatsGrid";
-import Topbar from "../../admin/Topbar";
+
 
 
 const AdminDashboard = () => {
