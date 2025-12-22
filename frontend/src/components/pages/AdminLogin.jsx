@@ -33,7 +33,13 @@ const AdminLogin = () => {
       navigate("/admin/dashboard");
     }
 
-    setLoading(false);
+    if(!login_data){
+      toast.error("invalid credentials")
+        setLoading(false);
+        return
+    }
+
+  
   };
 
   // Forgot password

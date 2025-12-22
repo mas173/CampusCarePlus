@@ -1,9 +1,9 @@
 const express = require("express");
-const { home } = require("../controllers/campuscare");
 const upload = require("../middlewares/upload");
 const tokenVerify = require("../middlewares/recaptcha");
-const {submitIssue, getIssueDetail, getAllIssues, getIssueDetailAdmin} = require("../controllers/issue.controller");
+const {submitIssue, getIssueDetail, getAllIssues, getIssueDetailAdmin , markResolved} = require("../controllers/issue.controller");
 const adminAuth = require("../middlewares/adminAuth");
+
 
 const router = express.Router();
 
@@ -18,4 +18,7 @@ router
   .get("/admin/allissues",adminAuth,getAllIssues)
   .get("/admin/issues/:reportId",adminAuth,getIssueDetailAdmin)
 
+
+  // update issues
+  .put("/admin/issues/resolve/:reportId", adminAuth, markResolved)
 module.exports = router;

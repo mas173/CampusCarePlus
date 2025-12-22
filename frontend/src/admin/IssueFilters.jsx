@@ -3,14 +3,10 @@ import AdminTrackIssue from "./AdminTrackIssue";
 import { useState } from "react";
 
 const IssueFilters = ({ filters, setFilters }) => {
-
-  
-  const [open, setOpen] = useState(false);
-
   const handleChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -19,7 +15,7 @@ const IssueFilters = ({ filters, setFilters }) => {
       category: "",
       priority: "",
       status: "",
-      date: ""
+      date: "",
     });
   };
 
@@ -37,8 +33,6 @@ const IssueFilters = ({ filters, setFilters }) => {
         </button>
         </div>
     <div className="bg-white rounded-2xl shadow-sm border p-5 mb-6">
-
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 text-gray-700 font-semibold">
           <Filter size={18} />
@@ -54,36 +48,38 @@ const IssueFilters = ({ filters, setFilters }) => {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-
-        {/* Category */}
         <select
           value={filters.category}
           onChange={(e) => handleChange("category", e.target.value)}
           className="filter-input"
         >
           <option value="">All Categories</option>
-          <option value="Hostel">Hostel</option>
-          <option value="WiFi">WiFi</option>
-          <option value="Hygiene">Hygiene</option>
+          <option value="Hostel Issues">Hostel Issues</option>
+          <option value="Hygiene & Sanitation">Hygiene & Sanitation</option>
+          <option value="WiFi & Internet">WiFi & Internet</option>
+          <option value="Electricity & Power">Electricity & Power</option>
+          <option value="Harassment">Harassment</option>
+          <option value="Ragging">Ragging</option>
+          <option value="Faculty Concerns">Faculty Concerns</option>
           <option value="Infrastructure">Infrastructure</option>
-          <option value="Security">Security</option>
+          <option value="Food & Mess">Food & Mess</option>
+          <option value="Library">Library</option>
+          <option value="Other">Other</option>
         </select>
 
-        {/* Priority */}
         <select
           value={filters.priority}
           onChange={(e) => handleChange("priority", e.target.value)}
           className="filter-input"
         >
           <option value="">All Priorities</option>
+          <option value="Critical">Critical</option>
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
 
-        {/* Status */}
         <select
           value={filters.status}
           onChange={(e) => handleChange("status", e.target.value)}
@@ -96,7 +92,6 @@ const IssueFilters = ({ filters, setFilters }) => {
           <option value="Rejected">Rejected</option>
         </select>
 
-        {/* Date */}
         <input
           type="date"
           value={filters.date}
