@@ -1,10 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import PriorityBadge from "../../admin/PriorityBadge";
-import IssueStatusBadge from "../../admin/IssueStatusBadge";
-import IssueDetailsLoader from "../../admin/IssueDetailsLoader";
-import NoIssueFound from "../../admin/NoIssueFound";
 import { useParams } from "react-router-dom";
-import useIssueDetail from "../../hooks/UseGetissueDetail";
+import toast from "react-hot-toast";
 import {
   MapPin,
   Calendar,
@@ -12,13 +8,20 @@ import {
   FileText,
   Brain,
   Image as ImageIcon,
+  ShieldCheck,
 } from "lucide-react";
+
+import PriorityBadge from "../../admin/PriorityBadge";
+import IssueStatusBadge from "../../admin/IssueStatusBadge";
+import IssueDetailsLoader from "../../admin/IssueDetailsLoader";
+import NoIssueFound from "../../admin/NoIssueFound";
+
+import useIssueDetail from "../../hooks/UseGetissueDetail";
 import {
   markAsrejected,
   markAsResolved,
   markInProgress,
 } from "../../lib/AdminActionApis";
-import toast from "react-hot-toast";
 
 const IssueDetails = () => {
   const { id } = useParams();
@@ -41,27 +44,28 @@ const IssueDetails = () => {
   if (!issue) return <NoIssueFound />;
 
   const handleAction = async () => {
-    if (!remark.trim()) return;
-
-    setIsSubmitting(true);
-
-    if (actionType == "resolved") {
-      await markAsResolved(id, remark);
+    if (!remark.trim()) {
+      toast.error("Remark is required");
+      return;
     }
 
-    if (actionType == "in_progress") {
-      await markInProgress(id, remark);
-    }
+    try {
+      setIsSubmitting(true);
 
-    if (actionType == "rejected") {
-      await markAsrejected(id, remark);
+      if (actionType === "resolved") await markAsResolved(id, remark);
+      if (actionType === "in_progress") await markInProgress(id, remark);
+      if (actionType === "rejected") await markAsrejected(id, remark);
+
+      toast.success("Status updated");
+      setActionType(null);
+      setRemark("");
+    } catch(error) {
+      toast.error(error.response.data.message);
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    
-    setIsSubmitting(false);
-    setActionType(null);
-    setRemark("");
   };
+  
 
   const actionTitleMap = {
     in_progress: "Mark Issue In Progress",
@@ -80,25 +84,13 @@ const IssueDetails = () => {
 
       <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Meta
-            icon={<MapPin size={18} />}
-            label="Location"
-            value={issue.location}
-          />
+          <Meta icon={<MapPin size={18} />} label="Location" value={issue.location} />
           <Meta
             icon={<Calendar size={18} />}
             label="Reported On"
-            value={
-              issue.createdAt
-                ? new Date(issue.createdAt).toLocaleString("en-IN")
-                : "—"
-            }
+            value={issue.createdAt ? new Date(issue.createdAt).toLocaleString("en-IN") : "—"}
           />
-          <Meta
-            icon={<User size={18} />}
-            label="Submitted By"
-            value={issue.submittedBy}
-          />
+          <Meta icon={<User size={18} />} label="Submitted By" value={issue.submittedBy} />
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -118,55 +110,57 @@ const IssueDetails = () => {
 
         {issue.attachment && (
           <Section title="Attached Evidence" icon={<ImageIcon size={18} />}>
-            <div className="rounded-xl overflow-hidden border">
-              <img
-                src={issue.attachment}
-                alt="Attachment"
-                className="w-full max-h-[420px] object-cover"
-              />
+            <img
+              src={issue.attachment}
+              alt="Attachment"
+              className="w-full max-h-[420px] rounded-xl border object-cover"
+            />
+          </Section>
+        )}
+
+        {(issue.inProgressAt || issue.resolvedAt || issue.rejectedAt) && (
+          <Section title="Admin Action Details" icon={<ShieldCheck size={18} />}>
+            <div className="space-y-4 rounded-xl border bg-gray-50 p-4 text-sm">
+              {issue.inProgressAt && (
+                <>
+                  <ActionMeta label="Marked In Progress On" value={issue.inProgressAt} />
+                  <RemarkBlock title="Processing Remark" remark={issue.processingRemark} />
+                </>
+              )}
+
+              {issue.resolvedAt && (
+                <>
+                  <ActionMeta label="Resolved On" value={issue.resolvedAt} />
+                  <RemarkBlock title="Resolving Remark" remark={issue.resolvingRemark} />
+                </>
+              )}
+
+              {issue.rejectedAt && (
+                <>
+                  <ActionMeta label="Rejected On" value={issue.rejectedAt} />
+                  <RemarkBlock title="Rejection Remark" remark={issue.rejectionRemark} />
+                </>
+              )}
             </div>
           </Section>
         )}
 
         <div className="border-t pt-6 flex flex-wrap gap-3 justify-end">
-          <ActionButton
-            label="Mark In Progress"
-            variant="yellow"
-            onClick={() => {
-              setActionType("in_progress");
-              setRemark(issue.adminRemark || "");
-            }}
-          />
-          <ActionButton
-            label="Resolve Issue"
-            variant="green"
-            onClick={() => {
-              setActionType("resolved");
-              setRemark(issue.adminRemark || "");
-            }}
-          />
-          <ActionButton
-            label="Reject Issue"
-            variant="red"
-            onClick={() => {
-              setActionType("rejected");
-              setRemark(issue.adminRemark || "");
-            }}
-          />
+          <ActionButton label="Mark In Progress" variant="yellow" onClick={() => setActionType("in_progress")} />
+          <ActionButton label="Resolve Issue" variant="green" onClick={() => setActionType("resolved")} />
+          <ActionButton label="Reject Issue" variant="red" onClick={() => setActionType("rejected")} />
         </div>
 
         {actionType && (
           <div className="border rounded-xl p-5 bg-gray-50 space-y-4">
-            <p className="font-semibold text-gray-800">
-              {actionTitleMap[actionType]}
-            </p>
+            <p className="font-semibold">{actionTitleMap[actionType]}</p>
 
             <textarea
               ref={remarkRef}
               rows="4"
               value={remark}
               onChange={(e) => setRemark(e.target.value)}
-              className="w-full rounded-lg border px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full rounded-lg border px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
             />
 
             <div className="flex justify-end gap-3">
@@ -183,16 +177,11 @@ const IssueDetails = () => {
               <button
                 disabled={isSubmitting}
                 onClick={handleAction}
-                className="flex items-center justify-center gap-2
-             px-5 py-2 rounded-lg
-             bg-emerald-600 text-white text-sm
-             hover:bg-emerald-700 transition
-             disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-60"
               >
                 {isSubmitting && (
-                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 )}
-
                 {isSubmitting ? "Processing..." : "Confirm Action"}
               </button>
             </div>
@@ -204,7 +193,7 @@ const IssueDetails = () => {
 };
 
 const Meta = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3">
+  <div className="flex gap-3">
     <div className="text-emerald-700">{icon}</div>
     <div>
       <p className="text-xs text-gray-500">{label}</p>
@@ -215,11 +204,29 @@ const Meta = ({ icon, label, value }) => (
 
 const Section = ({ title, icon, children }) => (
   <div className="space-y-2">
-    <div className="flex items-center gap-2 text-gray-900 font-semibold">
+    <div className="flex items-center gap-2 font-semibold text-gray-900">
       {icon}
       {title}
     </div>
     {children}
+  </div>
+);
+
+const ActionMeta = ({ label, value }) => (
+  <div>
+    <p className="text-xs text-gray-500">{label}</p>
+    <p className="font-medium text-gray-800">
+      {value ? new Date(value).toLocaleString("en-IN") : "—"}
+    </p>
+  </div>
+);
+
+const RemarkBlock = ({ title, remark }) => (
+  <div>
+    <p className="text-xs text-gray-500">{title}</p>
+    <p className="mt-1 rounded-lg border bg-white px-3 py-2 text-gray-700">
+      {remark || "No remark provided"}
+    </p>
   </div>
 );
 
