@@ -1,49 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IssueFilters from "../../admin/IssueFilters";
 import IssuesTable from "../../admin/IssuesTable";
-import { useNavigate } from "react-router-dom";
-
-const issuesData = [
-  {
-    id: "#CC101",
-    category: "Hostel",
-    location: "Block A",
-    priority: "High",
-    status: "Pending",
-    date: "2025-03-10",
-  },
-  {
-    id: "#CC102",
-    category: "WiFi",
-    location: "Library",
-    priority: "Medium",
-    status: "In Progress",
-    date: "2025-03-09",
-  },
-  {
-    id: "#CC103",
-    category: "Hygiene",
-    location: "Canteen",
-    priority: "Low",
-    status: "Resolved",
-    date: "2025-03-08",
-  },
-];
+import useAllIssues from "../../hooks/UseAllissues";
+import IssueDetailsLoader from "../../admin/IssueDetailsLoader";
 
 const Issues = () => {
-
-
+  const { isLoading, allIssues } = useAllIssues();
   const [filters, setFilters] = useState({
     category: "",
     priority: "",
+    status: "",
     date: "",
   });
 
-  const filteredIssues = issuesData.filter((issue) => {
+  if (isLoading) return <IssueDetailsLoader />;
+
+  const filteredIssues = allIssues.filter((issue) => {
+    const issueDate = issue.date
+      ? new Date(issue.date).toISOString().split("T")[0]
+      : "";
+
     return (
       (!filters.category || issue.category === filters.category) &&
-      (!filters.priority || issue.priority === filters.priority) &&
-      (!filters.date || issue.date === filters.date)
+      (!filters.priority ||
+        issue.priority?.toLowerCase() === filters.priority.toLowerCase()) &&
+      (!filters.status ||
+        issue.status?.toLowerCase() === filters.status.toLowerCase()) &&
+      (!filters.date || issueDate === filters.date)
     );
   });
 

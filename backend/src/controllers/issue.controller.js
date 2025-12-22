@@ -100,10 +100,11 @@ const getAllIssues = async (req, res) => {
       const data = doc.data();
 
       return {
-        id: data.id || doc.id, // use your custom reportId if present
+        id: data.id || doc.id, 
         category: data.category || null,
         location: data.location || null,
         status: data.status || null,
+        priority:data.priority || null,
         date: data.createdAt
           ? data.createdAt.toDate().toISOString()
           : null,
@@ -124,7 +125,7 @@ const getAllIssues = async (req, res) => {
 
 const getIssueDetailAdmin = async (req,res)=>{
  const { reportId } = req.params;
- console.log(reportId)
+//  console.log(reportId)
 
   const snapshot = await db
     .collection("issues")
@@ -158,6 +159,182 @@ const getIssueDetailAdmin = async (req,res)=>{
 
 }
 
+const markResolved = async (req, res) => {
+  const { reportId } = req.params;
+  const { remark } = req.body;
 
-module.exports = { getIssueDetail,submitIssue,getAllIssues,getIssueDetailAdmin
+
+  if (!reportId || !remark) {
+    return res.status(400).json({
+      message: "Report ID and remark are required",
+    });
+  }
+
+  try {
+    
+    const snapshot = await db
+      .collection("issues")
+      .where("id", "==", reportId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({
+        message: "Issue not found",
+      });
+    }
+
+    
+    const issueDoc = snapshot.docs[0];
+    const issueRef = db.collection("issues").doc(issueDoc.id);
+
+    
+    await issueRef.update({
+      status: "Resolved",
+      remark: remark,
+      resolvedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return res.status(200).json({
+      message: "Issue marked as resolved successfully",
+      reportId,
+    });
+  } catch (error) {
+    console.error("Mark resolved error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const markInProgress = async (req, res) => {
+  const { reportId } = req.params;
+  const { remark } = req.body;
+
+
+  if (!reportId || !remark) {
+    return res.status(400).json({
+      message: "Report ID and remark are required",
+    });
+  }
+
+  try {
+  
+    const snapshot = await db
+      .collection("issues")
+      .where("id", "==", reportId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({
+        message: "Issue not found",
+      });
+    }
+
+    const issueDoc = snapshot.docs[0];
+    const issueRef = db.collection("issues").doc(issueDoc.id);
+    const issueData = issueDoc.data();
+
+
+    if (issueData.status === "Resolved") {
+      return res.status(400).json({
+        message: "Resolved issue cannot be moved back to In Progress",
+      });
+    }
+
+
+    await issueRef.update({
+      status: "In Progress",
+      remark: remark,
+      inProgressAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return res.status(200).json({
+      message: "Issue marked as In Progress successfully",
+      reportId,
+    });
+  } catch (error) {
+    console.error("Mark In Progress error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const markRejected = async (req, res) => {
+  const { reportId } = req.params;
+  const { remark } = req.body;
+
+
+  if (!reportId || !remark) {
+    return res.status(400).json({
+      message: "Report ID and remark are required",
+    });
+  }
+
+  try {
+
+    const snapshot = await db
+      .collection("issues")
+      .where("id", "==", reportId)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return res.status(404).json({
+        message: "Issue not found",
+      });
+    }
+
+    const issueDoc = snapshot.docs[0];
+    const issueRef = db.collection("issues").doc(issueDoc.id);
+    const issueData = issueDoc.data();
+
+  
+    if (issueData.status === "Resolved") {
+      return res.status(400).json({
+        message: "Resolved issue cannot be rejected",
+      });
+    }
+
+    if (issueData.status === "Rejected") {
+      return res.status(400).json({
+        message: "Issue is already rejected",
+      });
+    }
+
+    await issueRef.update({
+      status: "Rejected",
+      remark: remark,
+      rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return res.status(200).json({
+      message: "Issue marked as rejected successfully",
+      reportId,
+    });
+  } catch (error) {
+    console.error("Mark rejected error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+module.exports = { markRejected };
+
+
+
+module.exports = { markInProgress };
+
+
+module.exports = { markResolved };
+
+module.exports = { getIssueDetail,submitIssue,getAllIssues,getIssueDetailAdmin ,markResolved, markInProgress , markRejected
 };

@@ -17,7 +17,8 @@ const login = async (email, password) => {
     return userCredential.user;
   } catch (error) {
     console.error("Login failed:", error);
-    throw error; 
+    return false;
+     
   }
 };
 
