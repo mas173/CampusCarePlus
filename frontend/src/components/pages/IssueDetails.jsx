@@ -11,6 +11,9 @@ import {
   FileText,
   Brain,
   Image as ImageIcon,
+  ScrollText,
+  FileCheck2,
+  GalleryVertical,
 } from "lucide-react";
 
 const IssueDetails = () => {
@@ -32,8 +35,8 @@ const IssueDetails = () => {
       </div>
 
       <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Meta icon={<MapPin size={18} />} label="Location" value={issue.location} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Meta icon={<User size={18} />} label="Submitted By" value={issue.submittedBy} />
           <Meta
             icon={<Calendar size={18} />}
             label="Reported On"
@@ -43,7 +46,10 @@ const IssueDetails = () => {
                 : "—"
             }
           />
-          <Meta icon={<User size={18} />} label="Submitted By" value={issue.submittedBy} />
+          <Meta icon={<MapPin size={18} />} label="Location" value={issue.location} />
+          
+          
+          <Meta icon={<GalleryVertical size={18} />} label="Category" value={issue.category} />
         </div>
 
         <div className="flex flex-wrap gap-3">
@@ -51,14 +57,14 @@ const IssueDetails = () => {
           <PriorityBadge priority={issue.priority} />
         </div>
 
-        <Section title="Issue Description" icon={<FileText size={18} />}>
+        <Section title="Issue Description :" icon={<ScrollText size={18} />}>
           <p className="text-gray-700 leading-relaxed">
             {issue.description}
           </p>
         </Section>
 
         {issue.aiSummary && (
-          <Section title="AI Analysis" icon={<Brain size={18} />}>
+          <Section title="AI Analysis :" icon={<FileCheck2 size={18} />}>
             <p className="text-sm text-gray-700">
               {issue.aiSummary}
             </p>
@@ -66,7 +72,7 @@ const IssueDetails = () => {
         )}
 
         {issue.attachment && (
-          <Section title="Attached Evidence" icon={<ImageIcon size={18} />}>
+          <Section title="Attached Evidence :" icon={<ImageIcon size={18} />}>
             <div className="rounded-xl overflow-hidden border">
               <img
                 src={issue.attachment}
@@ -109,9 +115,9 @@ const Section = ({ title, icon, children }) => (
 
 const ActionButton = ({ label, variant }) => {
   const styles = {
-    yellow: "bg-yellow-500 hover:bg-yellow-600",
-    green: "bg-emerald-600 hover:bg-emerald-700",
-    red: "bg-red-600 hover:bg-red-700",
+    yellow: "bg-yellow-500 cursor-pointer hover:bg-yellow-600",
+    green: "bg-emerald-600 cursor-pointer hover:bg-emerald-700",
+    red: "bg-red-600 cursor-pointer hover:bg-red-700",
   };
 
   return (
