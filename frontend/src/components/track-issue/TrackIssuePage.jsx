@@ -57,7 +57,6 @@ useEffect(() => {
           </button>Track Your Issue</h1>
         </header>
 
-        {/* 🔄 Loading Bar */}
         {loading && (
           <div className="loading-wrapper">
             <div className="loading-bar" />
@@ -67,7 +66,6 @@ useEffect(() => {
 
         {!loading && notFound && <IssueNotFound id={id} />}
 
-        {/* 📄 Issue Data */}
         {!loading && issue && (
           <>
             <IssueHeroCard issue={issue} />
