@@ -235,7 +235,7 @@ const markResolved = async (req, res) => {
           data: {
             issueId: reportId,
             type: "ISSUE_RESOLVED",
-            url: `/track/${reportId}`,
+            url: `/track/issue/${reportId}`,
           },
         });
       } catch (notifyErr) {
@@ -305,7 +305,7 @@ const markInProgress = async (req, res) => {
             issueId: String(reportId),
             status: "IN_PROGRESS",
             type: "ISSUE_STATUS",
-            url: `/track/${reportId}`,
+            url: `/track/issue/${reportId}`,
           },
         });
       } catch (notifyErr) {
@@ -380,7 +380,7 @@ const markRejected = async (req, res) => {
             issueId: String(reportId),
             status: "REJECTED",
             type: "ISSUE_REJECTED",
-            url: `/track/${reportId}`,
+            url: `/track/issue/${reportId}`,
           },
         });
       } catch (notifyErr) {
