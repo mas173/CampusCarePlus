@@ -400,6 +400,46 @@ const markRejected = async (req, res) => {
     });
   }
 };
+const getIssueStats = async (req, res) => {
+  try {
+    const snapshot = await db.collection("issues").get();
+
+    let total = 0;
+    let pending = 0;
+    let inProgress = 0;
+    let resolved = 0;
+
+    snapshot.forEach((doc) => {
+      total++;
+      const status = doc.data().status;
+
+      if (status === "pending") pending++;
+      else if (status === "In Progress") inProgress++;
+      else if (status === "Resolved") resolved++;
+    });
+  
+    // console.log(total , pending , inProgress , resolved)
+    return res.status(200).json({
+      success: true,
+      data: {
+        total,
+        pending,
+        inProgress,
+        resolved,
+      },
+    });
+
+    
+  } catch (error) {
+    console.error("Dashboard stats error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard stats",
+    });
+  }
+};
+
+
 
 module.exports = {
   getIssueDetail,
@@ -409,4 +449,5 @@ module.exports = {
   markResolved,
   markInProgress,
   markRejected,
+  getIssueStats
 };

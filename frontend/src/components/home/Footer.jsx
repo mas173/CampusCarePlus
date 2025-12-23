@@ -79,7 +79,7 @@ const Footer = () => {
   <div className="flex items-center justify-center gap-10 sm:gap-16">
     <div className="text-center space-y-2 text-sm text-gray-400">
       <img 
-      src=".\images\sec.png" 
+      src="https://res.cloudinary.com/dj7jdqra0/image/upload/v1766499920/Picsart_25-12-23_16-29-48-304_zqxvgw.png" 
       alt="SEC Sasaram" 
       className="h-16 sm:h-20 w-auto filter drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" 
       />
@@ -87,14 +87,14 @@ const Footer = () => {
     </div>
 
     <img 
-      src=".\images\logo.png" 
+      src="https://res.cloudinary.com/dj7jdqra0/image/upload/v1766478121/Picsart_25-12-23_13-36-24-158_1_nsd27u.png" 
       alt="Website Logo" 
       className="h-16 sm:h-20 w-auto filter drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]" 
     />
 
     <div className="text-center items-center space-y-2 text-sm text-gray-400">
       <img 
-      src=".\images\img.png" 
+      src="https://res.cloudinary.com/dj7jdqra0/image/upload/v1766499920/Picsart_25-12-23_16-19-32-368_iyf4mk.png" 
       alt="GSSSIETW" 
       className="h-16 sm:h-20 w-auto ml-7 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" 
     />
@@ -103,16 +103,6 @@ const Footer = () => {
     
   </div>
 </div>
-
-
-            {/* <div className="flex items-center justify-center gap-8 py-6">
-              
-              <img src=".\images\sec.png" alt="Shershah Engineering College" className="h-20 w-auto transition filter drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-              
-              <img src=".\images\logo.png" alt="Website logo" className="h-20 w-auto transition" />
-              
-              <img src=".\images\img.png" alt="College Logo" className="h-20 w-auto transition filter drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]" />
-            </div> */}
 
 
           <p className="mt-4 md:mt-0">

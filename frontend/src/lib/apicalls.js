@@ -33,6 +33,14 @@ export const getIssueDetailByAdmin = async (id) => {
 export const getIssueDetailByUSer = async (id) => {
   const issueDetail = await axiosInstance.get(`/issues/${id}`);
 
-  console.log(issueDetail.data);
+  
   return issueDetail.data;
 };
+
+export const allStat = async ()=>{
+  const stat = await adminAxios.get("/admin/issues/data/all",{
+      headers: await getAuthHeaders(),
+    });
+  
+  return stat.data.data;
+}

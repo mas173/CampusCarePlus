@@ -5,7 +5,7 @@ const adminTrackIssue = async (reportId) => {
   const res = await axiosInstance.get(`/admin/issues/${reportId}`,{
     headers:await getAuthHeaders()
   });
-  console.log(res.data)
+  // console.log(res.data)
   return res.data;
 };
 

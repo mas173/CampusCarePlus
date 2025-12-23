@@ -13,7 +13,7 @@ const login = async (email, password) => {
       email,
       password
     );
-  console.log(await getAuthHeaders())
+  // console.log(await getAuthHeaders())
     return userCredential.user;
   } catch (error) {
     console.error("Login failed:", error);
