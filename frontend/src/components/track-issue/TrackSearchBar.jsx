@@ -9,9 +9,13 @@ const TrackSearchBar = ({ onSearch, loading }) => {
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Enter your Report ID (CC-2025-XXXX)"
+        placeholder="Enter your Report ID : (CC-2025-XXXX)"
       />
-      <button onClick={() => onSearch(value)} disabled={loading}>
+      <button 
+        onClick={() => onSearch(value)} 
+        disabled={loading} 
+        className="bg-emerald-800 text-white px-4 rounded-lg cursor-pointer flex items-center gap-1 hover:bg-emerald-600"
+      >
         <Search size={18} />
         {loading ? "Tracking..." : "Track"}
       </button>

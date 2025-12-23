@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import TrackSearchBar from "./TrackSearchBar";
 import IssueHeroCard from "./IssueHeroCard";
 import IssueProgressTracker from "./IssueProgressTracker";
-import IssueDescription from "./IssueDescription";
 import IssueAttachment from "./IssueAttachment";
 import { getIssueDetailByUSer } from "../../lib/apicalls";
 import toast from "react-hot-toast";
@@ -38,10 +37,10 @@ const TrackIssuePage = () => {
     <div className="track-bg">
       <div className="track-container">
         <header className="track-header">
-          <button className="back-btn" onClick={() => navigate("/")}>
-            <ArrowLeft size={16} /> Home
-          </button>
-          <h1>Track Your Issue</h1>
+          
+          <h1> <button className="cursor-pointer mr-6" onClick={() => navigate("/")}>
+            <ArrowLeft />
+          </button>Track Your Issue</h1>
         </header>
 
         <TrackSearchBar onSearch={handleSearch} loading={loading} />
@@ -51,8 +50,7 @@ const TrackIssuePage = () => {
             <IssueHeroCard issue={issue} />
             <IssueProgressTracker issue={issue} />
 
-            <div className="two-column">
-              <IssueDescription description={issue.description} />
+            <div>
               {issue.attachment && (
                 <IssueAttachment image={issue.attachment} />
               )}
