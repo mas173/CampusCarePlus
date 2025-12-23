@@ -1,13 +1,15 @@
 const admin = require("firebase-admin");
-const path = require("path");
+require("dotenv").config();
 
-const serviceAccount = require(
-  path.join(__dirname, "../../serviceAccountKey.json")
-);
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  throw new Error("FIREBASE_SERVICE_ACCOUNT env variable is missing");
+}
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert(
+      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    ),
   });
 }
 
