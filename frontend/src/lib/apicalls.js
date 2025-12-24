@@ -44,3 +44,17 @@ export const allStat = async ()=>{
   
   return stat.data.data;
 }
+
+
+export const startServer = async()=>{
+
+  try {
+    
+const data=  await axiosInstance.get("/")
+    console.log("server started")
+
+  } catch (error) {
+    console.log(error)
+  }
+
+}

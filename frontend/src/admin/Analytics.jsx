@@ -32,7 +32,7 @@ export default function Analytics() {
     }
   }, [allIssues]);
 
-  /* ===================== LOADING STATE ===================== */
+  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
@@ -41,7 +41,7 @@ export default function Analytics() {
     );
   }
 
-  /* ===================== DATA CALCULATIONS ===================== */
+  /* DATA CALCULATIONS*/
 
   // Category
   const categoryData = issuesList.reduce((acc, issue) => {
@@ -71,11 +71,14 @@ export default function Analytics() {
 
   const timeData = uniqueDates.map((date) => {
     const dailyIssues = issuesList.filter((i) => i.date === date);
+
+    
     return {
       date: new Date(date).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       }),
+      
       issues: dailyIssues.length,
       resolved: dailyIssues.filter((i) => i.status === "Resolved").length,
     };

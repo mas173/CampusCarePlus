@@ -11,10 +11,13 @@ import AdminLogin from "./components/pages/AdminLogin";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Settings from "./admin/Settings";
 import TrackIssuePage from "./components/track-issue/TrackIssuePage";
+import { startServer } from "./lib/apicalls";
 
 
 
 const App = () => {
+
+  startServer()
 
   
   return (
