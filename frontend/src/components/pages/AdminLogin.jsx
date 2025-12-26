@@ -86,6 +86,10 @@ const AdminLogin = () => {
             <li>Privacy-first architecture</li>
             <li>Trusted & secure access</li>
           </ul>
+        <div className=" border-2 pl-2">
+            <p>email: mastervicky898@gmail.com</p>
+      <p>password:user1234</p>
+        </div>
 
         </div>
 
@@ -146,6 +150,7 @@ const AdminLogin = () => {
         </div>
 
       </div>
+      
     </div>
   );
 };
